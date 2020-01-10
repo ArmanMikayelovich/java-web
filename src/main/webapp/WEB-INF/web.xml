@@ -5,36 +5,56 @@
    http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
 
     <display-name>Web Project</display-name>
-    <context-param>
-        <param-name>MyParam</param-name>
-        <param-value>MyParamValue</param-value>
-    </context-param>
+
     <servlet>
-        <servlet-name>MyServlet</servlet-name>
-        <servlet-class>com.energizeglobal.internship.servlet.TestServlet</servlet-class>
+        <servlet-name>HeaderServlet</servlet-name>
+        <servlet-class>com.energizeglobal.internship.servlet.HeaderServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
     <servlet-mapping>
-        <servlet-name>MyServlet</servlet-name>
-        <url-pattern>/MyServlet/*</url-pattern>
+        <servlet-name>HeaderServlet</servlet-name>
+        <url-pattern>/header</url-pattern>
     </servlet-mapping>
 
-<!--    <filter>-->
-<!--        <filter-name>MyFilter</filter-name>-->
-<!--        <filter-class>com.demo.MyFilter</filter-class>-->
-<!--        <init-param>-->
-<!--            <param-name>test-param</param-name>-->
-<!--            <param-value>Initialization Parameter</param-value>-->
-<!--        </init-param>-->
-<!--    </filter>-->
+    <servlet>
+        <servlet-name>ParameterServlet</servlet-name>
+        <servlet-class>com.energizeglobal.internship.servlet.ParameterServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ParameterServlet</servlet-name>
+        <url-pattern>/parameter</url-pattern>
+    </servlet-mapping>
 
-<!--    <filter-mapping>-->
-<!--        <filter-name>MyFilterr</filter-name>-->
-<!--        <url-pattern>/*</url-pattern>-->
-<!--    </filter-mapping>-->
+    <filter>
+        <filter-name>IpFilter</filter-name>
+        <filter-class>com.energizeglobal.internship.filter.IpFilter</filter-class>
+    </filter>
 
-<!--    <listener>-->
-<!--        <listener-class>com.demo.MyListener</listenerclass>-->
-<!--    </listener>-->
+    <filter-mapping>
+        <filter-name>IpFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>ErrorServlet</servlet-name>
+        <servlet-class>com.energizeglobal.internship.servlet.ErrorHandlerServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ErrorServlet</servlet-name>
+        <url-pattern>/error</url-pattern>
+    </servlet-mapping>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/error</location>
+    </error-page>
+
+    <!--    <listener>-->
+    <!--        <listener-class>com.demo.MyListener</listenerclass>-->
+    <!--    </listener>-->
 </web-app>
