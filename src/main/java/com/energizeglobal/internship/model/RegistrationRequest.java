@@ -3,7 +3,6 @@ package com.energizeglobal.internship.model;
 import com.energizeglobal.internship.util.Validator;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
