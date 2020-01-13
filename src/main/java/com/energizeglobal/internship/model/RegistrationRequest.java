@@ -2,6 +2,7 @@ package com.energizeglobal.internship.model;
 
 import com.energizeglobal.internship.util.Validator;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class RegistrationRequest extends LoginRequest {
 
     @NotNull(message = "birthday field should not be empty")

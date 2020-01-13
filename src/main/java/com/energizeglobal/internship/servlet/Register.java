@@ -1,5 +1,7 @@
 package com.energizeglobal.internship.servlet;
 
+import com.energizeglobal.internship.dao.UserDao;
+import com.energizeglobal.internship.dao.UserDaoJDBCImpl;
 import com.energizeglobal.internship.model.RegistrationRequest;
 import com.energizeglobal.internship.util.Validator;
 
@@ -14,6 +16,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Set;
 
 public class Register extends HttpServlet {
+    private final UserDao userDao = new UserDaoJDBCImpl();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.sendRedirect("/registration.jsp");
@@ -24,26 +27,31 @@ public class Register extends HttpServlet {
         final String username = req.getParameter("username");
         final String password = req.getParameter("password");
         LocalDate birthday;
+
         try {
             birthday = LocalDate.parse(req.getParameter("birthday"));
         } catch (DateTimeParseException ignored) {
             birthday = null;
         }
+
         final String email = req.getParameter("email");
         final String country = req.getParameter("country");
+
         final RegistrationRequest registrationRequest =
                 new RegistrationRequest(username, password, birthday, email, country);
+
         final Set<ConstraintViolation<RegistrationRequest>> constraintViolations =
                 Validator.validate(registrationRequest);
+
         if (!constraintViolations.isEmpty()) {
             for (ConstraintViolation<RegistrationRequest> violation : constraintViolations) {
-                req.setAttribute(violation.getPropertyPath().toString(),violation.getMessage());
+                req.setAttribute(violation.getPropertyPath().toString(), violation.getMessage());
             }
-            req.getRequestDispatcher("/registration.jsp").forward(req,resp);
+
+            req.getRequestDispatcher("/registration.jsp").forward(req, resp);
             return;
         }
-        //TODO do register
+        userDao.register(registrationRequest);
         resp.sendRedirect("/login.jsp");
-
     }
 }

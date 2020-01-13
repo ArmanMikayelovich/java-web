@@ -43,12 +43,10 @@ public class UserDaoJDBCImpl implements UserDao {
     public boolean isUsernameExists(String username) {
         try (final Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
             final PreparedStatement preparedStatement = connection.prepareStatement(USERNAME_CHECK_QUERY);
+
             preparedStatement.setString(1, username);
             @Cleanup final ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return false;
-            }
-            return true;
+            return resultSet.next();
 
         } catch (SQLException ex) {
             throw new ServerSideException();
@@ -63,12 +61,14 @@ public class UserDaoJDBCImpl implements UserDao {
 
         try (final Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
              final PreparedStatement preparedStatement = connection.prepareStatement(REGISTER_QUERY);) {
+
             preparedStatement.setString(1, registrationRequest.getUsername());
             preparedStatement.setString(2, registrationRequest.getPassword());
             preparedStatement.setDate(3, DateConverter
                     .convertLocalDateToSqlDate(registrationRequest.getBirthday()));
             preparedStatement.setString(4, registrationRequest.getCountry());
             preparedStatement.execute();
+
         } catch (SQLException e) {
             throw new ServerSideException();
         }
@@ -78,9 +78,12 @@ public class UserDaoJDBCImpl implements UserDao {
     public User login(LoginRequest loginRequest) {
         try (final Connection connection = getConnection();
              final PreparedStatement preparedStatement = connection.prepareStatement(LOGIN_QUERY)) {
+
             preparedStatement.setString(1, loginRequest.getUsername());
             preparedStatement.setString(2, loginRequest.getPassword());
+
             @Cleanup final ResultSet resultSet = preparedStatement.executeQuery();
+
             if (resultSet.next()) {
                 final String username = resultSet.getString("username");
                 final LocalDate birthday = DateConverter.convertDateToLocalDate(resultSet.getDate("birthday"));
@@ -88,6 +91,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 final String country = resultSet.getString("country");
                 return new User(username, birthday, email, country);
             }
+
             throw new InvalidCredentialsException();
         } catch (SQLException e) {
             throw new ServerSideException();
@@ -99,11 +103,14 @@ public class UserDaoJDBCImpl implements UserDao {
         if (!isUsernameExists(username)) {
             throw new UsernameNotFountException();
         }
+
         try (final Connection connection = getConnection();
              final PreparedStatement preparedStatement = connection.prepareStatement(IS_ADMIN_QUERY)) {
+
             preparedStatement.setString(1, username);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.getBoolean("isAdmin");
+
         } catch (SQLException e) {
             throw new ServerSideException();
         }
@@ -116,9 +123,11 @@ public class UserDaoJDBCImpl implements UserDao {
         }
         try (final Connection connection = getConnection();
              final PreparedStatement preparedStatement = connection.prepareStatement(CHANGE_ADMIN_QUERY)) {
+
             preparedStatement.setBoolean(1, adminState);
             preparedStatement.setString(2, username);
             preparedStatement.execute();
+
         } catch (SQLException e) {
             throw new ServerSideException();
         }
@@ -126,7 +135,31 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public void updatePassword(LoginRequest userCredentials, String newPassword) {
+        if (!isUsernameExists(userCredentials.getUsername())) {
+            throw new UsernameNotFountException();
+        }
 
+        try (final Connection connection = getConnection();
+             final PreparedStatement preparedStatement = connection.prepareStatement(GET_PASSWORD)) {
+
+            preparedStatement.setString(1, userCredentials.getUsername());
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            final String password = resultSet.getString("password");
+
+            if (userCredentials.getPassword().equals(password)) {
+
+                @Cleanup final PreparedStatement updatePasswordStatement = connection.prepareStatement(UPDATE_PASSWORD);
+                updatePasswordStatement.setString(1, newPassword);
+                updatePasswordStatement.setString(2, userCredentials.getUsername());
+                updatePasswordStatement.executeUpdate();
+
+            } else {
+                throw new InvalidCredentialsException();
+            }
+        } catch (SQLException ex) {
+            throw new ServerSideException();
+        }
     }
 
     @Override
@@ -138,15 +171,20 @@ public class UserDaoJDBCImpl implements UserDao {
     @Override
     public List<User> findAll() {
         final List<User> users = new ArrayList<>();
+
         try (final Connection connection = getConnection();
              final PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_QUERY)) {
+
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+
             while (resultSet.next()) {
+
                 final String username = resultSet.getString("username");
                 final Date birthday = resultSet.getDate("birthday");
                 final String email = resultSet.getString("email");
                 final String country = resultSet.getString("country");
                 users.add(new User(username, birthday.toLocalDate(), email, country));
+
             }
         } catch (SQLException e) {
             throw new ServerSideException();
@@ -159,9 +197,13 @@ public class UserDaoJDBCImpl implements UserDao {
         if (!isUsernameExists(username)) {
             throw new UsernameNotFountException();
         }
+
         try (final Connection connection = getConnection();
-             final PreparedStatement preparedStatement = connection.prepareStatement(DELETE_QUERY)) {
+             final PreparedStatement preparedStatement
+                     = connection.prepareStatement(DELETE_QUERY)) {
+
             preparedStatement.execute();
+
         } catch (SQLException e) {
             throw new ServerSideException();
         }
