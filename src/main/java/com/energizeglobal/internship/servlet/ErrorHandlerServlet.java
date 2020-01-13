@@ -9,9 +9,10 @@ import java.io.IOException;
 public class ErrorHandlerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Throwable exception = (Throwable) req.getAttribute("javax.servlet.error.exception");
-        resp.getWriter().println(exception.toString());
-        resp.getWriter().flush();
+//        Throwable exception = (Throwable) req.getAttribute("javax.servlet.error.exception");
+//        resp.getWriter().println(exception.toString());
+//        resp.getWriter().flush();
+        //TODO get your exceptions and send message with http error code
     }
 
     @Override

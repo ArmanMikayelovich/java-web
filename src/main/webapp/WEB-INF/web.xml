@@ -7,33 +7,21 @@
     <display-name>Web Project</display-name>
 
     <servlet>
-        <servlet-name>HeaderServlet</servlet-name>
-        <servlet-class>com.energizeglobal.internship.servlet.HeaderServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
+        <servlet-name>Register</servlet-name>
+        <servlet-class>com.energizeglobal.internship.servlet.Register</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>HeaderServlet</servlet-name>
-        <url-pattern>/header</url-pattern>
+        <servlet-name>Register</servlet-name>
+        <url-pattern>/register</url-pattern>
     </servlet-mapping>
-
-    <servlet>
-        <servlet-name>ParameterServlet</servlet-name>
-        <servlet-class>com.energizeglobal.internship.servlet.ParameterServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ParameterServlet</servlet-name>
-        <url-pattern>/parameter</url-pattern>
-    </servlet-mapping>
-
     <filter>
-        <filter-name>IpFilter</filter-name>
-        <filter-class>com.energizeglobal.internship.filter.IpFilter</filter-class>
+        <filter-name>AdminFilter</filter-name>
+        <filter-class>com.energizeglobal.internship.filter.AdminFilter</filter-class>
     </filter>
 
     <filter-mapping>
-        <filter-name>IpFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <filter-name>AdminFilter</filter-name>
+        <url-pattern>/admin</url-pattern>
     </filter-mapping>
 
     <servlet>
