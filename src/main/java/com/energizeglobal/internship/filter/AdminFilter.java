@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 @Slf4j
 public class AdminFilter implements Filter {
-    private final UserDao userDao = new UserDaoJDBCImpl();
+    private final UserDao userDao =UserDaoJDBCImpl.getInstance();
 
     private static final int UNAUTHORIZED = 403;
     @Override

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 public class UserInfoChanger extends HttpServlet {
-    private final UserDao userDao = new UserDaoJDBCImpl();
+    private final UserDao userDao =UserDaoJDBCImpl.getInstance();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.sendRedirect("/user/userPage.jsp");

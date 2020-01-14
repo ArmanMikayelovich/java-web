@@ -62,7 +62,6 @@
     </filter>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
-        <url-pattern>/adminPage.jsp</url-pattern>
         <url-pattern>/admin/*</url-pattern>
     </filter-mapping>
 
@@ -78,12 +77,22 @@
         <url-pattern>/error</url-pattern>
     </servlet-mapping>
     <error-page>
+        <exception-type>com.energizeglobal.internship.util.exception.InvalidCredentialsException</exception-type>
+        <location>/error</location>
+    </error-page>
+
+    <error-page>
         <error-code>404</error-code>
         <location>/error</location>
     </error-page>
     <error-page>
-        <exception-type>java.lang.Throwable</exception-type>
+        <error-code>401</error-code>
         <location>/error</location>
     </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/error</location>
+    </error-page>
+
 
 </web-app>

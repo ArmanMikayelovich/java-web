@@ -221,7 +221,7 @@
 <body class="align">
 
 <div class="grid">
-
+    <a style="color: red"><%=request.getParameter("error")!= null ? "Invalid Credentials" : "" %></a>
     <form action="${pageContext.request.contextPath}/login" method="POST" class="form login">
 
         <div class="form__field">

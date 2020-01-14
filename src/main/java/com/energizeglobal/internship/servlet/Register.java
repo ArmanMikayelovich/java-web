@@ -4,6 +4,7 @@ import com.energizeglobal.internship.dao.UserDao;
 import com.energizeglobal.internship.dao.UserDaoJDBCImpl;
 import com.energizeglobal.internship.model.RegistrationRequest;
 import com.energizeglobal.internship.util.Validator;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,9 +15,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Set;
-
+@Slf4j
 public class Register extends HttpServlet {
-    private final UserDao userDao = new UserDaoJDBCImpl();
+    private final UserDao userDao = UserDaoJDBCImpl.getInstance();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.sendRedirect("/registration.jsp");
@@ -53,5 +54,6 @@ public class Register extends HttpServlet {
         }
         userDao.register(registrationRequest);
         resp.sendRedirect("/login.jsp");
+        log.debug("Successfully registered User : " + registrationRequest.toString());
     }
 }

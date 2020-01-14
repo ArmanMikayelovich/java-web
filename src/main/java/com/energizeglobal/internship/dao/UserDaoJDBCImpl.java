@@ -19,6 +19,11 @@ import static com.energizeglobal.internship.util.DateConverter.convertDateToLoca
 import static com.energizeglobal.internship.util.DateConverter.convertLocalDateToSqlDate;
 
 public class UserDaoJDBCImpl implements UserDao {
+    private static UserDaoJDBCImpl userDaoJDBC = new UserDaoJDBCImpl();
+
+    public static UserDaoJDBCImpl getInstance() {
+        return userDaoJDBC;
+    }
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     static{
         try {

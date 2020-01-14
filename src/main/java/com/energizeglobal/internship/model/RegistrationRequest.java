@@ -33,4 +33,6 @@ public class RegistrationRequest extends LoginRequest {
         this.email = email;
         this.country = country;
     }
+
+
 }
