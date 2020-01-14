@@ -26,6 +26,15 @@
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>AdminStateChanger</servlet-name>
+        <servlet-class>com.energizeglobal.internship.servlet.AdminStateChanger</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminStateChanger</servlet-name>
+        <url-pattern>/admin/state-changer</url-pattern>
+    </servlet-mapping>
+
     <!--AUTHENTICATION FILTER-->
     <filter>
         <filter-name>Authentication</filter-name>
@@ -34,7 +43,7 @@
     <filter-mapping>
         <filter-name>Authentication</filter-name>
         <url-pattern>/userPage.jsp</url-pattern>
-        <url-pattern>/admin.jsp</url-pattern>
+        <url-pattern>/adminPage.jsp</url-pattern>
         <url-pattern>/admin</url-pattern>
     </filter-mapping>
 
@@ -45,7 +54,8 @@
     </filter>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
-        <url-pattern>/admin</url-pattern>
+        <url-pattern>/adminPage.jsp</url-pattern>
+        <url-pattern>/admin/*</url-pattern>
     </filter-mapping>
 
 

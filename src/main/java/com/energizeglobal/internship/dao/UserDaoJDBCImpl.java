@@ -24,7 +24,7 @@ public class UserDaoJDBCImpl implements UserDao {
         try {
             Class.forName(JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
-            //TODO add logger or sout
+            //TODO add logger
         }
     }
     private static final String DB_URL = "jdbc:mysql://localhost/web?createDatabaseIfNotExist=true";
@@ -41,7 +41,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     private static final String CHANGE_ADMIN_QUERY = "UPDATE users SET isAdmin = ? WHERE username=?";
 
-    private static final String FIND_ALL_USERS = "SELECT username, birthday, email, country FROM users";
+    private static final String FIND_ALL_USERS = "SELECT username, birthday, email, country, isAdmin FROM users";
 
     private static final String DELETE_QUERY = "DELETE FROM users WHERE username = ?";
 
@@ -120,6 +120,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
             preparedStatement.setString(1, username);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
             return resultSet.getBoolean("isAdmin");
 
         } catch (SQLException e) {
@@ -201,15 +202,18 @@ public class UserDaoJDBCImpl implements UserDao {
         }
         try (final Connection connection = getConnection();
              final PreparedStatement preparedStatement = connection.prepareStatement(FIND_USER_BY_USERNAME)) {
+
             preparedStatement.setString(1, username);
             @Cleanup final ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
+
             final String usernameFromDB = resultSet.getString("username");
             final LocalDate birthday = convertDateToLocalDate(resultSet.getDate("birthday"));
             final String email = resultSet.getString("email");
             final String country = resultSet.getString("country");
             final boolean isAdmin = resultSet.getBoolean("isAdmin");
             return new User(usernameFromDB, birthday, email, country,isAdmin);
+
         } catch (SQLException e) {
             throw new ServerSideException();
         }
@@ -230,7 +234,8 @@ public class UserDaoJDBCImpl implements UserDao {
                 final Date birthday = resultSet.getDate("birthday");
                 final String email = resultSet.getString("email");
                 final String country = resultSet.getString("country");
-                users.add(new User(username, birthday.toLocalDate(), email, country));
+                final Boolean isAdmin = resultSet.getBoolean("isAdmin");
+                users.add(new User(username, birthday.toLocalDate(), email, country,isAdmin));
 
             }
         } catch (SQLException e) {
