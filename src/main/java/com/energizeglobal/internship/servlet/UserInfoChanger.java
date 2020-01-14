@@ -18,7 +18,7 @@ public class UserInfoChanger extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.sendRedirect("/user/userPage.jsp");
     }
-
+//TODO set parameter checkers like the registration page
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String username = req.getParameter("username");

@@ -81,6 +81,7 @@
         <location>/error</location>
     </error-page>
 
+<!--    TODO create error handler PAGE for uncaught exceptions of error statuses -->
     <error-page>
         <error-code>404</error-code>
         <location>/error</location>

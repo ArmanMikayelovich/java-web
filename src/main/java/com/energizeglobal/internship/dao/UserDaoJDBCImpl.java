@@ -17,10 +17,10 @@ import java.util.List;
 
 import static com.energizeglobal.internship.util.DateConverter.convertDateToLocalDate;
 import static com.energizeglobal.internship.util.DateConverter.convertLocalDateToSqlDate;
-
+//TODO create properties.xml or json file for the application
 public class UserDaoJDBCImpl implements UserDao {
     private static UserDaoJDBCImpl userDaoJDBC = new UserDaoJDBCImpl();
-
+    private UserDaoJDBCImpl(){}
     public static UserDaoJDBCImpl getInstance() {
         return userDaoJDBC;
     }

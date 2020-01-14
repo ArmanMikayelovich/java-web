@@ -48,7 +48,10 @@ public class Register extends HttpServlet {
             for (ConstraintViolation<RegistrationRequest> violation : constraintViolations) {
                 req.setAttribute(violation.getPropertyPath().toString(), violation.getMessage());
             }
-
+            //TODO fix problem of constrains & UsernameAlreadyExistsException
+            if (userDao.isUsernameExists(username)) {
+                req.setAttribute("username", "Username already exists");
+            }
             req.getRequestDispatcher("/registration.jsp").forward(req, resp);
             return;
         }
