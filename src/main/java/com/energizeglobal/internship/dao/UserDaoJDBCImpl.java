@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.energizeglobal.internship.util.DateConverter.convertLocalDateToSqlDate;
+
 public class UserDaoJDBCImpl implements UserDao {
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     private static final String DB_URL = "jdbc:mysql://localhost/web?createDatabaseIfNotExist=true";
@@ -37,6 +39,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     private static final String GET_PASSWORD = "SELECT password FROM users WHERE username = ?";
     private static final String UPDATE_PASSWORD = "UPDATE users SET password =? WHERE username=?";
+    private static final String UPDATE_USER = "UPDATE users SET birthday=?, email=?, country =? WHERE username=?";
 
 
     @Override
@@ -64,8 +67,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
             preparedStatement.setString(1, registrationRequest.getUsername());
             preparedStatement.setString(2, registrationRequest.getPassword());
-            preparedStatement.setDate(3, DateConverter
-                    .convertLocalDateToSqlDate(registrationRequest.getBirthday()));
+            preparedStatement.setDate(3, convertLocalDateToSqlDate(registrationRequest.getBirthday()));
             preparedStatement.setString(4, registrationRequest.getCountry());
             preparedStatement.execute();
 
@@ -164,7 +166,22 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public void updateUserInfo(User user) {
+        if (!isUsernameExists(user.getUsername())) {
+            throw new UsernameNotFountException();
+        }
+        try (final Connection connection = getConnection();
+             final PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER);) {
 
+
+            preparedStatement.setDate(1, convertLocalDateToSqlDate(user.getBirthday()));
+            preparedStatement.setString(2, user.getEmail());
+            preparedStatement.setString(3, user.getCountry());
+            preparedStatement.setString(4, user.getUsername());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new ServerSideException();
+        }
     }
 
 
