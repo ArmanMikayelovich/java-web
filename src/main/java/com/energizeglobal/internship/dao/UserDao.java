@@ -3,6 +3,7 @@ package com.energizeglobal.internship.dao;
 import com.energizeglobal.internship.model.LoginRequest;
 import com.energizeglobal.internship.model.RegistrationRequest;
 import com.energizeglobal.internship.model.User;
+import com.energizeglobal.internship.util.exception.InvalidCredentialsException;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface UserDao {
 
     void register(RegistrationRequest registrationRequest);
 
-    User login(LoginRequest loginRequest);
+    User login(LoginRequest loginRequest) throws InvalidCredentialsException;
 
     Boolean isAdmin(String username);
 
@@ -23,6 +24,8 @@ public interface UserDao {
     void updateUserInfo(User user);
 
     List<User> findAll();
+
+    User findByUsername(String username);
 
     void remove(String username);
 

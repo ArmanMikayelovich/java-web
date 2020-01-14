@@ -15,10 +15,18 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.energizeglobal.internship.util.DateConverter.convertDateToLocalDate;
 import static com.energizeglobal.internship.util.DateConverter.convertLocalDateToSqlDate;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+    static{
+        try {
+            Class.forName(JDBC_DRIVER);
+        } catch (ClassNotFoundException e) {
+            //TODO add logger or sout
+        }
+    }
     private static final String DB_URL = "jdbc:mysql://localhost/web?createDatabaseIfNotExist=true";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "root";
@@ -33,14 +41,14 @@ public class UserDaoJDBCImpl implements UserDao {
 
     private static final String CHANGE_ADMIN_QUERY = "UPDATE users SET isAdmin = ? WHERE username=?";
 
-    private static final String SELECT_ALL_QUERY = "SELECT username, birthday, email, country FROM users";
+    private static final String FIND_ALL_USERS = "SELECT username, birthday, email, country FROM users";
 
     private static final String DELETE_QUERY = "DELETE FROM users WHERE username = ?";
 
     private static final String GET_PASSWORD = "SELECT password FROM users WHERE username = ?";
     private static final String UPDATE_PASSWORD = "UPDATE users SET password =? WHERE username=?";
     private static final String UPDATE_USER = "UPDATE users SET birthday=?, email=?, country =? WHERE username=?";
-
+    private static final String FIND_USER_BY_USERNAME = "SELECT username, birthday, email, country, isAdmin from users WHERE username =?";
 
     @Override
     public boolean isUsernameExists(String username) {
@@ -68,7 +76,8 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(1, registrationRequest.getUsername());
             preparedStatement.setString(2, registrationRequest.getPassword());
             preparedStatement.setDate(3, convertLocalDateToSqlDate(registrationRequest.getBirthday()));
-            preparedStatement.setString(4, registrationRequest.getCountry());
+            preparedStatement.setString(4,registrationRequest.getEmail());
+            preparedStatement.setString(5, registrationRequest.getCountry());
             preparedStatement.execute();
 
         } catch (SQLException e) {
@@ -77,7 +86,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     @Override
-    public User login(LoginRequest loginRequest) {
+    public User login(LoginRequest loginRequest) throws InvalidCredentialsException {
         try (final Connection connection = getConnection();
              final PreparedStatement preparedStatement = connection.prepareStatement(LOGIN_QUERY)) {
 
@@ -186,11 +195,32 @@ public class UserDaoJDBCImpl implements UserDao {
 
 
     @Override
+    public User findByUsername(String username) {
+        if (!isUsernameExists(username)) {
+            throw new UsernameNotFountException();
+        }
+        try (final Connection connection = getConnection();
+             final PreparedStatement preparedStatement = connection.prepareStatement(FIND_USER_BY_USERNAME)) {
+            preparedStatement.setString(1, username);
+            @Cleanup final ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            final String usernameFromDB = resultSet.getString("username");
+            final LocalDate birthday = convertDateToLocalDate(resultSet.getDate("birthday"));
+            final String email = resultSet.getString("email");
+            final String country = resultSet.getString("country");
+            final boolean isAdmin = resultSet.getBoolean("isAdmin");
+            return new User(usernameFromDB, birthday, email, country,isAdmin);
+        } catch (SQLException e) {
+            throw new ServerSideException();
+        }
+    }
+
+    @Override
     public List<User> findAll() {
         final List<User> users = new ArrayList<>();
 
         try (final Connection connection = getConnection();
-             final PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_QUERY)) {
+             final PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_USERS)) {
 
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
 

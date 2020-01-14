@@ -6,6 +6,7 @@
 
     <display-name>Web Project</display-name>
 
+    <!--REGISTER SERVLET-->
     <servlet>
         <servlet-name>Register</servlet-name>
         <servlet-class>com.energizeglobal.internship.servlet.Register</servlet-class>
@@ -14,16 +15,41 @@
         <servlet-name>Register</servlet-name>
         <url-pattern>/register</url-pattern>
     </servlet-mapping>
+
+    <!--    LOGIN SERVLET-->
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>com.energizeglobal.internship.servlet.Login</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    <!--AUTHENTICATION FILTER-->
+    <filter>
+        <filter-name>Authentication</filter-name>
+        <filter-class>com.energizeglobal.internship.filter.AuthenticationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>Authentication</filter-name>
+        <url-pattern>/userPage.jsp</url-pattern>
+        <url-pattern>/admin.jsp</url-pattern>
+        <url-pattern>/admin</url-pattern>
+    </filter-mapping>
+
+    <!--    ADMIN FILTER-->
     <filter>
         <filter-name>AdminFilter</filter-name>
         <filter-class>com.energizeglobal.internship.filter.AdminFilter</filter-class>
     </filter>
-
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/admin</url-pattern>
     </filter-mapping>
 
+
+    <!--ERROR HANDLING-->
     <servlet>
         <servlet-name>ErrorServlet</servlet-name>
         <servlet-class>com.energizeglobal.internship.servlet.ErrorHandlerServlet</servlet-class>
@@ -42,7 +68,4 @@
         <location>/error</location>
     </error-page>
 
-    <!--    <listener>-->
-    <!--        <listener-class>com.demo.MyListener</listenerclass>-->
-    <!--    </listener>-->
 </web-app>

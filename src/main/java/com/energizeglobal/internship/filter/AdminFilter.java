@@ -15,4 +15,9 @@ public class AdminFilter implements Filter {
         filterChain.doFilter(servletRequest, servletResponse);
        //TODO get username from request, check isAdmin from Database, and go ahead
     }
+
+    @Override
+    public void destroy() {
+
+    }
 }
