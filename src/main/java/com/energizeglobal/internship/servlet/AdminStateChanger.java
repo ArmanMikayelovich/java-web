@@ -18,11 +18,11 @@ public class AdminStateChanger extends HttpServlet {
         final String isAdminString = req.getParameter("isAdmin");
         final boolean isAdmin = Boolean.parseBoolean(isAdminString);
         userDao.changeAdminState(username, isAdmin);
-        resp.sendRedirect("/adminPage.jsp");
+        resp.sendRedirect("/admin/adminPage.jsp");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.sendRedirect("/adminPage.jsp");
+        resp.sendRedirect("/admin/adminPage.jsp");
     }
 }

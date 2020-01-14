@@ -36,7 +36,11 @@
 
 </table>
 <% if (userDao.isAdmin((String) session.getAttribute("username"))) {%>
-    <a href="adminPage.jsp">Admin panel</a>
+    <a href="../admin/adminPage.jsp">Admin panel</a>
 <% } %>
+<form action="${pageContext.request.contextPath}/user/changeUser.jsp" method="post">
+    <input type="hidden" name="username" value="<%=(String)session.getAttribute("username")%>"/>
+    <input type="submit" value="Change info" />
+</form>
 </body>
 </html>

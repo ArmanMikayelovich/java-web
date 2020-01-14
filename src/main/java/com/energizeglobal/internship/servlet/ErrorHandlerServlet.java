@@ -16,6 +16,7 @@ public class ErrorHandlerServlet extends HttpServlet {
 //        resp.getWriter().println(exception.toString());
 //        resp.getWriter().flush();
         //TODO get your exceptions and send message with http error code
+        //TODO with invalidCredentialsException forward to login.jsp with error message
     }
 
     @Override

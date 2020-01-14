@@ -24,11 +24,19 @@
         <td><%=user.getEmail()%></td>
         <td><%=user.getCountry()%></td>
         <td><%= Boolean.valueOf(user.isAdmin()).toString() %></td>
-        <td><form action="admin/state-changer" method="post">
+<%--        Change Admin state form--%>
+        <td><form action="${pageContext.request.contextPath}/admin/state-changer" method="post">
             <input type="text" hidden="hidden" name="username" value="<%=user.getUsername()%>">
             <input type="text" hidden="hidden" name="isAdmin" value="<%=!user.isAdmin()%>">
-            <input type="submit" name="Change admin state." value="Change admin state.">
+            <input type="submit" value="Change admin state.">
         </form>
+        </td>
+<%--        Change user info form--%>
+        <td>
+            <form action="${pageContext.request.contextPath}/user/changeUser.jsp" method="post">
+                <input type="hidden" name="username" value="<%=user.getUsername()%>"/>
+                <input type="submit" value="Change info" />
+            </form>
         </td>
     </tr>
     <% } %>
