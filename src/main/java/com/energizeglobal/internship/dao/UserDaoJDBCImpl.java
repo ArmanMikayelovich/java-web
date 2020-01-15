@@ -4,11 +4,13 @@ import com.energizeglobal.internship.model.LoginRequest;
 import com.energizeglobal.internship.model.RegistrationRequest;
 import com.energizeglobal.internship.model.User;
 import com.energizeglobal.internship.util.DateConverter;
+import com.energizeglobal.internship.util.Properties;
 import com.energizeglobal.internship.util.exception.InvalidCredentialsException;
 import com.energizeglobal.internship.util.exception.ServerSideException;
 import com.energizeglobal.internship.util.exception.UsernameAlreadyExists;
 import com.energizeglobal.internship.util.exception.UsernameNotFountException;
 import lombok.Cleanup;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -17,7 +19,7 @@ import java.util.List;
 
 import static com.energizeglobal.internship.util.DateConverter.convertDateToLocalDate;
 import static com.energizeglobal.internship.util.DateConverter.convertLocalDateToSqlDate;
-//TODO create properties.xml or json file for the application
+@Slf4j
 public class UserDaoJDBCImpl implements UserDao {
     private static UserDaoJDBCImpl userDaoJDBC = new UserDaoJDBCImpl();
     private UserDaoJDBCImpl(){}
@@ -29,12 +31,12 @@ public class UserDaoJDBCImpl implements UserDao {
         try {
             Class.forName(JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
-            //TODO add logger
+           log.error("Class not found {}",JDBC_DRIVER);
         }
     }
-    private static final String DB_URL = "jdbc:mysql://localhost/web?createDatabaseIfNotExist=true";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "root";
+    private static final String DB_URL = "db.url";
+    private static final String USERNAME = "db.username";
+    private static final String PASSWORD = "db.password";
     private static final String REGISTER_QUERY = "INSERT INTO users " +
             "(username, password, birthday, email, country) " +
             "values (?,?,?,?,?)";
@@ -57,7 +59,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public boolean isUsernameExists(String username) {
-        try (final Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD)) {
+        log.debug("checking is username exists: {}",username);
+        try (final Connection connection = getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(USERNAME_CHECK_QUERY);
 
             preparedStatement.setString(1, username);
@@ -65,12 +68,14 @@ public class UserDaoJDBCImpl implements UserDao {
             return resultSet.next();
 
         } catch (SQLException ex) {
+            log.error("An error occurred when we checking is username exists: {}", ex.getSQLState());
             throw new ServerSideException();
         }
     }
 
     @Override
     public void register(RegistrationRequest registrationRequest) {
+        log.debug("trying to register: {}",registrationRequest);
         if (isUsernameExists(registrationRequest.getUsername())) {
             throw new UsernameAlreadyExists();
         }
@@ -84,14 +89,17 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(4,registrationRequest.getEmail());
             preparedStatement.setString(5, registrationRequest.getCountry());
             preparedStatement.execute();
-
+        log.debug("successfully registered: {}",registrationRequest);
         } catch (SQLException e) {
+            log.error("An error occurred in registration process: {}", e.getSQLState());
             throw new ServerSideException();
+
         }
     }
 
     @Override
     public User login(LoginRequest loginRequest) throws InvalidCredentialsException {
+        log.debug("login: {}",loginRequest);
         try (final Connection connection = getConnection();
              final PreparedStatement preparedStatement = connection.prepareStatement(LOGIN_QUERY)) {
 
@@ -110,12 +118,14 @@ public class UserDaoJDBCImpl implements UserDao {
 
             throw new InvalidCredentialsException();
         } catch (SQLException e) {
+            log.error("An error occurred in login process: {}", e.getSQLState());
             throw new ServerSideException();
         }
     }
 
     @Override
     public Boolean isAdmin(String username) {
+        log.debug("checking, is user admin: {}", username);
         if (!isUsernameExists(username)) {
             throw new UsernameNotFountException();
         }
@@ -126,15 +136,18 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(1, username);
             @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
+            log.debug("is user {} admin : {}", username, resultSet.getBoolean("isAdmin"));
             return resultSet.getBoolean("isAdmin");
 
         } catch (SQLException e) {
+            log.error("An error occurred in login process: {}", e.getSQLState());
             throw new ServerSideException();
         }
     }
 
     @Override
     public void changeAdminState(String username, boolean adminState) {
+        log.debug("changing admin state of user: {}",username);
         if (!isUsernameExists(username)) {
             throw new UsernameNotFountException();
         }
@@ -146,12 +159,15 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.execute();
 
         } catch (SQLException e) {
+            log.error("An error occurred in admin state changing process: {}", e.getSQLState());
             throw new ServerSideException();
         }
     }
 
     @Override
     public void updatePassword(LoginRequest userCredentials, String newPassword) {
+        //TODO realise this functionality or delete it
+        log.debug("changing password for {}", userCredentials.getUsername());
         if (!isUsernameExists(userCredentials.getUsername())) {
             throw new UsernameNotFountException();
         }
@@ -175,12 +191,14 @@ public class UserDaoJDBCImpl implements UserDao {
                 throw new InvalidCredentialsException();
             }
         } catch (SQLException ex) {
+            log.error("An error occurred in login process: {}", ex.getSQLState());
             throw new ServerSideException();
         }
     }
 
     @Override
     public void updateUserInfo(User user) {
+        log.debug("updating user info: {}",user.getUsername());
         if (!isUsernameExists(user.getUsername())) {
             throw new UsernameNotFountException();
         }
@@ -192,9 +210,9 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setString(3, user.getCountry());
             preparedStatement.setString(4, user.getUsername());
-
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
+            log.error("An error occurred in login process: {}", e.getSQLState());
             throw new ServerSideException();
         }
     }
@@ -202,6 +220,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public User findByUsername(String username) {
+        log.debug("searching user by username: {}" ,username);
         if (!isUsernameExists(username)) {
             throw new UsernameNotFountException();
         }
@@ -217,15 +236,19 @@ public class UserDaoJDBCImpl implements UserDao {
             final String email = resultSet.getString("email");
             final String country = resultSet.getString("country");
             final boolean isAdmin = resultSet.getBoolean("isAdmin");
-            return new User(usernameFromDB, birthday, email, country,isAdmin);
+            final User user = new User(usernameFromDB, birthday, email, country, isAdmin);
+            log.debug("found user: {}", user);
+            return user;
 
         } catch (SQLException e) {
+            log.error("An error occurred in login process: {}", e.getSQLState());
             throw new ServerSideException();
         }
     }
 
     @Override
     public List<User> findAll() {
+        log.debug("find all users id db");
         final List<User> users = new ArrayList<>();
 
         try (final Connection connection = getConnection();
@@ -241,8 +264,8 @@ public class UserDaoJDBCImpl implements UserDao {
                 final String country = resultSet.getString("country");
                 final Boolean isAdmin = resultSet.getBoolean("isAdmin");
                 users.add(new User(username, birthday.toLocalDate(), email, country,isAdmin));
-
             }
+            log.debug("Found {} users", users.size());
         } catch (SQLException e) {
             throw new ServerSideException();
         }
@@ -251,6 +274,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public void remove(String username) {
+        log.debug("deleting user: {}",username);
         if (!isUsernameExists(username)) {
             throw new UsernameNotFountException();
         }
@@ -260,14 +284,18 @@ public class UserDaoJDBCImpl implements UserDao {
                      = connection.prepareStatement(DELETE_QUERY)) {
 
             preparedStatement.execute();
-
+            log.debug("user {} deleted",username);
         } catch (SQLException e) {
+            log.error("An error occurred in login process: {}", e.getSQLState());
             throw new ServerSideException();
         }
     }
 
 
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+        final String dBURL = Properties.get(DB_URL);
+        final String dBUsername =  Properties.get(USERNAME);
+        final String dBPassword = Properties.get(PASSWORD);
+        return DriverManager.getConnection(dBURL, dBUsername, dBPassword);
     }
 }

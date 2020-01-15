@@ -11,7 +11,7 @@
 
 </head>
 <body>
-<%! UserDao userDao = new UserDaoJDBCImpl();%>
+<%! UserDao userDao =  UserDaoJDBCImpl.getInstance();%>
 <% User user = userDao.findByUsername((String) session.getAttribute("username"));%>
 <table>
     <tr>

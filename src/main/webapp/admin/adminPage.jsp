@@ -8,7 +8,7 @@
     <title>Welcome Admin - <%=session.getAttribute("username")%></title>
 </head>
 <body>
-<%! UserDao userDao = new UserDaoJDBCImpl();%>
+<%! UserDao userDao =  UserDaoJDBCImpl.getInstance();%>
 <table>
     <tr>
         <th>Username</th>

@@ -15,7 +15,6 @@ public class ErrorHandlerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("s");
         //TODO get your exceptions and send message with http error code
-        //TODO with invalidCredentialsException forward to login.jsp with error message
         final Class exceptionClass = (Class) req.getAttribute("javax.servlet.error.exception_type");
         if (exceptionClass != null) {
 

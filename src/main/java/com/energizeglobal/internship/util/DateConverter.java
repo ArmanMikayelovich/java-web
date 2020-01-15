@@ -7,7 +7,7 @@ public class DateConverter {
     }
 
     public static LocalDate convertDateToLocalDate(java.sql.Date dateToConvert) {
-       return dateToConvert.toLocalDate();
+        return dateToConvert.toLocalDate();
     }
 
     public static java.sql.Date convertLocalDateToSqlDate(LocalDate dateToConvert) {
