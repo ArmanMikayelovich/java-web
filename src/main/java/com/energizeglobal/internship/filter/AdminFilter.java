@@ -22,8 +22,9 @@ public class AdminFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         final String username = (String) req.getSession().getAttribute("username");
+        log.debug("checking username in Admin filter: {}",username);
         if (userDao.isAdmin(username)) {
-            filterChain.doFilter(servletRequest,servletResponse);
+            filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
         throw new UnAuthorizedException();

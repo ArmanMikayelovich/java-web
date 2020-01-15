@@ -172,8 +172,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     @Override
-    public void updatePassword(LoginRequest userCredentials, String newPassword) {
-        //TODO realise this functionality or delete it
+    public void updatePassword(LoginRequest userCredentials, String newPassword) throws InvalidCredentialsException {
         log.debug("changing password for {}", userCredentials.getUsername());
         if (!isUsernameExists(userCredentials.getUsername())) {
             throw new UsernameNotFountException();

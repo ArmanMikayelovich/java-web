@@ -12,7 +12,8 @@ public class AuthenticationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        log.debug(servletRequest + "|" + servletResponse);
+        log.debug("checking username in authenticated in AuthenticationFilter.");
+
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         if (req.getSession(false) == null || req.getSession().getAttribute("username") == null) {
             throw new UnAuthenticatedException();

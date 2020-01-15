@@ -24,7 +24,7 @@ public class Login extends HttpServlet {
         userDao.login(loginRequest);
         final HttpSession session = req.getSession(true);
         session.setAttribute("username", username);
-        req.getRequestDispatcher("/user/userPage.jsp").forward(req,resp);
+        req.getRequestDispatcher("/login.jsp").forward(req,resp);
         log.debug("Successfully logged in with username " + username + "and password " + password);
     }
 

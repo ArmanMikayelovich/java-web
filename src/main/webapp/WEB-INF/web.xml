@@ -43,7 +43,16 @@
         <servlet-name>UserInfoChange</servlet-name>
         <url-pattern>/user/change-user-info</url-pattern>
     </servlet-mapping>
-<!--    DELETE USER-->
+<!--    USER CHANGE PASSWORD SERVLET-->
+    <servlet>
+        <servlet-name>ChangePassword</servlet-name>
+        <servlet-class>com.energizeglobal.internship.servlet.ChangePassword</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ChangePassword</servlet-name>
+        <url-pattern>/user/change-password</url-pattern>
+    </servlet-mapping>
+    <!--    DELETE USER-->
     <servlet>
         <servlet-name>DeleteUser</servlet-name>
         <servlet-class>com.energizeglobal.internship.servlet.DeleteUser</servlet-class>
@@ -51,6 +60,15 @@
     <servlet-mapping>
         <servlet-name>DeleteUser</servlet-name>
         <url-pattern>/user/delete</url-pattern>
+    </servlet-mapping>
+<!--    LOGOUT SERVLET-->
+    <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>com.energizeglobal.internship.servlet.Logout</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 <!--    HOMEPAGE SERVLET-->
     <servlet-mapping>

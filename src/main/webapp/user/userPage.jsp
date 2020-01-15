@@ -46,5 +46,9 @@
     <input type="hidden" name="username" value="<%=(String)session.getAttribute("username")%>"/>
     <input type="submit" value="Delete" />
 </form>
+<br/>
+<a href="${pageContext.request.contextPath}/user/changePassword.jsp">Change password</a>
+<a href="${pageContext.request.contextPath}/logout">Logout</a>
+
 </body>
 </html>

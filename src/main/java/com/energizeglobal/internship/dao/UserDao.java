@@ -13,7 +13,7 @@ public interface UserDao {
 
     void register(RegistrationRequest registrationRequest);
 
-    User login(LoginRequest loginRequest) throws InvalidCredentialsException;
+    User login(LoginRequest loginRequest);
 
     Boolean isAdmin(String username);
 
