@@ -42,5 +42,9 @@
     <input type="hidden" name="username" value="<%=(String)session.getAttribute("username")%>"/>
     <input type="submit" value="Change info" />
 </form>
+<form action="${pageContext.request.contextPath}/user/delete" method="post">
+    <input type="hidden" name="username" value="<%=(String)session.getAttribute("username")%>"/>
+    <input type="submit" value="Delete" />
+</form>
 </body>
 </html>

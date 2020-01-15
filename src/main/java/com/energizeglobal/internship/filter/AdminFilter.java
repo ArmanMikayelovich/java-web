@@ -24,6 +24,7 @@ public class AdminFilter implements Filter {
         final String username = (String) req.getSession().getAttribute("username");
         if (userDao.isAdmin(username)) {
             filterChain.doFilter(servletRequest,servletResponse);
+            return;
         }
         throw new UnAuthorizedException();
     }

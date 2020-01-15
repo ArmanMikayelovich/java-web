@@ -19,21 +19,28 @@ import java.util.List;
 
 import static com.energizeglobal.internship.util.DateConverter.convertDateToLocalDate;
 import static com.energizeglobal.internship.util.DateConverter.convertLocalDateToSqlDate;
+
 @Slf4j
 public class UserDaoJDBCImpl implements UserDao {
     private static UserDaoJDBCImpl userDaoJDBC = new UserDaoJDBCImpl();
-    private UserDaoJDBCImpl(){}
+
+    private UserDaoJDBCImpl() {
+    }
+
     public static UserDaoJDBCImpl getInstance() {
         return userDaoJDBC;
     }
+
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    static{
+
+    static {
         try {
             Class.forName(JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
-           log.error("Class not found {}",JDBC_DRIVER);
+            log.error("Class not found {}", JDBC_DRIVER);
         }
     }
+
     private static final String DB_URL = "db.url";
     private static final String USERNAME = "db.username";
     private static final String PASSWORD = "db.password";
@@ -59,7 +66,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public boolean isUsernameExists(String username) {
-        log.debug("checking is username exists: {}",username);
+        log.debug("checking is username exists: {}", username);
         try (final Connection connection = getConnection()) {
             final PreparedStatement preparedStatement = connection.prepareStatement(USERNAME_CHECK_QUERY);
 
@@ -75,7 +82,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public void register(RegistrationRequest registrationRequest) {
-        log.debug("trying to register: {}",registrationRequest);
+        log.debug("trying to register: {}", registrationRequest);
         if (isUsernameExists(registrationRequest.getUsername())) {
             throw new UsernameAlreadyExists();
         }
@@ -86,10 +93,10 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(1, registrationRequest.getUsername());
             preparedStatement.setString(2, registrationRequest.getPassword());
             preparedStatement.setDate(3, convertLocalDateToSqlDate(registrationRequest.getBirthday()));
-            preparedStatement.setString(4,registrationRequest.getEmail());
+            preparedStatement.setString(4, registrationRequest.getEmail());
             preparedStatement.setString(5, registrationRequest.getCountry());
             preparedStatement.execute();
-        log.debug("successfully registered: {}",registrationRequest);
+            log.debug("successfully registered: {}", registrationRequest);
         } catch (SQLException e) {
             log.error("An error occurred in registration process: {}", e.getSQLState());
             throw new ServerSideException();
@@ -99,7 +106,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public User login(LoginRequest loginRequest) throws InvalidCredentialsException {
-        log.debug("login: {}",loginRequest);
+        log.debug("login: {}", loginRequest);
         try (final Connection connection = getConnection();
              final PreparedStatement preparedStatement = connection.prepareStatement(LOGIN_QUERY)) {
 
@@ -147,7 +154,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public void changeAdminState(String username, boolean adminState) {
-        log.debug("changing admin state of user: {}",username);
+        log.debug("changing admin state of user: {}", username);
         if (!isUsernameExists(username)) {
             throw new UsernameNotFountException();
         }
@@ -198,7 +205,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public void updateUserInfo(User user) {
-        log.debug("updating user info: {}",user.getUsername());
+        log.debug("updating user info: {}", user.getUsername());
         if (!isUsernameExists(user.getUsername())) {
             throw new UsernameNotFountException();
         }
@@ -220,7 +227,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public User findByUsername(String username) {
-        log.debug("searching user by username: {}" ,username);
+        log.debug("searching user by username: {}", username);
         if (!isUsernameExists(username)) {
             throw new UsernameNotFountException();
         }
@@ -263,7 +270,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 final String email = resultSet.getString("email");
                 final String country = resultSet.getString("country");
                 final Boolean isAdmin = resultSet.getBoolean("isAdmin");
-                users.add(new User(username, birthday.toLocalDate(), email, country,isAdmin));
+                users.add(new User(username, birthday.toLocalDate(), email, country, isAdmin));
             }
             log.debug("Found {} users", users.size());
         } catch (SQLException e) {
@@ -274,7 +281,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public void remove(String username) {
-        log.debug("deleting user: {}",username);
+        log.debug("deleting user: {}", username);
         if (!isUsernameExists(username)) {
             throw new UsernameNotFountException();
         }
@@ -282,9 +289,9 @@ public class UserDaoJDBCImpl implements UserDao {
         try (final Connection connection = getConnection();
              final PreparedStatement preparedStatement
                      = connection.prepareStatement(DELETE_QUERY)) {
-
+            preparedStatement.setString(1, username);
             preparedStatement.execute();
-            log.debug("user {} deleted",username);
+            log.debug("user {} deleted", username);
         } catch (SQLException e) {
             log.error("An error occurred in login process: {}", e.getSQLState());
             throw new ServerSideException();
@@ -294,7 +301,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     private Connection getConnection() throws SQLException {
         final String dBURL = Properties.get(DB_URL);
-        final String dBUsername =  Properties.get(USERNAME);
+        final String dBUsername = Properties.get(USERNAME);
         final String dBPassword = Properties.get(PASSWORD);
         return DriverManager.getConnection(dBURL, dBUsername, dBPassword);
     }

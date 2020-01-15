@@ -38,6 +38,12 @@
                 <input type="submit" value="Change info" />
             </form>
         </td>
+        <td>
+            <form action="${pageContext.request.contextPath}/user/delete" method="post">
+                <input type="hidden" name="username" value="<%=user.getUsername()%>"/>
+                <input type="submit" value="Delete" />
+            </form>
+        </td>
     </tr>
     <% } %>
 

@@ -43,6 +43,15 @@
         <servlet-name>UserInfoChange</servlet-name>
         <url-pattern>/user/change-user-info</url-pattern>
     </servlet-mapping>
+<!--    DELETE USER-->
+    <servlet>
+        <servlet-name>DeleteUser</servlet-name>
+        <servlet-class>com.energizeglobal.internship.servlet.DeleteUser</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteUser</servlet-name>
+        <url-pattern>/user/delete</url-pattern>
+    </servlet-mapping>
 <!--    HOMEPAGE SERVLET-->
     <servlet-mapping>
         <servlet-name>default</servlet-name>

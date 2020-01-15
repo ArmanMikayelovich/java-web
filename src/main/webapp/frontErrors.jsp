@@ -340,7 +340,7 @@
     /*--------------------------------------------FrameWork------------------------*/
 </style>
 <head>
-    <title>404</title>
+    <title>Error</title>
 </head>
 <body>
 <link href='https://fonts.googleapis.com/css?family=Anton|Passion+One|PT+Sans+Caption' rel='stylesheet' type='text/css'>
