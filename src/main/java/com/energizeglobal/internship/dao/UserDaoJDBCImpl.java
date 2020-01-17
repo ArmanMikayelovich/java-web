@@ -31,19 +31,19 @@ public class UserDaoJDBCImpl implements UserDao {
         return userDaoJDBC;
     }
 
-    private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String DB_URL = "db.url";
+    private static final String USERNAME = "db.username";
+    private static final String PASSWORD = "db.password";
+    private static final String JDBC_DRIVER = "db.driver";
+
 
     static {
         try {
-            Class.forName(JDBC_DRIVER);
+            Class.forName(Properties.get(JDBC_DRIVER));
         } catch (ClassNotFoundException e) {
             log.error("Class not found {}", JDBC_DRIVER);
         }
     }
-
-    private static final String DB_URL = "db.url";
-    private static final String USERNAME = "db.username";
-    private static final String PASSWORD = "db.password";
     private static final String REGISTER_QUERY = "INSERT INTO users " +
             "(username, password, birthday, email, country) " +
             "values (?,?,?,?,?)";
@@ -87,7 +87,7 @@ public class UserDaoJDBCImpl implements UserDao {
             throw new UsernameAlreadyExists();
         }
 
-        try (final Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+        try (final Connection connection =getConnection();
              final PreparedStatement preparedStatement = connection.prepareStatement(REGISTER_QUERY);) {
 
             preparedStatement.setString(1, registrationRequest.getUsername());

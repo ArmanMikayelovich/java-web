@@ -25,7 +25,7 @@ public class DeleteUser extends HttpServlet {
             log.debug(" user deleted {}",deletingUsername);
         } else if (userDao.isAdmin(loggedInUsername)) {
             userDao.remove(deletingUsername);
-            resp.sendRedirect("/");
+            resp.sendRedirect("/admin/adminPage.jsp");
         } else {
             log.debug(" cant delete user {}",deletingUsername);
             throw new IllegalAccessException();
