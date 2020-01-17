@@ -7,6 +7,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+/**
+ * first filter in filter chain
+ */
 @Slf4j
 public class AuthenticationFilter implements Filter {
 

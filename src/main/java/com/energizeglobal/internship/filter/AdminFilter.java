@@ -9,6 +9,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+/**
+ * second filter in filter chain
+ */
 @Slf4j
 public class AdminFilter implements Filter {
     private final UserDao userDao =UserDaoJDBCImpl.getInstance();

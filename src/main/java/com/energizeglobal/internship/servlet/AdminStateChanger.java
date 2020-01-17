@@ -9,8 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
 
+/**
+ * changing user role (admin or not), if admin has changed his state, he can't recover that.
+ */
 @Slf4j
 public class AdminStateChanger extends HttpServlet {
     private final UserDao userDao = UserDaoJDBCImpl.getInstance();

@@ -11,9 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+
 @Slf4j
 public class Login extends HttpServlet {
-    private UserDao userDao =UserDaoJDBCImpl.getInstance();
+    private final UserDao userDao = UserDaoJDBCImpl.getInstance();
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String username = req.getParameter("username");
@@ -24,7 +26,7 @@ public class Login extends HttpServlet {
         userDao.login(loginRequest);
         final HttpSession session = req.getSession(true);
         session.setAttribute("username", username);
-        req.getRequestDispatcher("/login.jsp").forward(req,resp);
+        req.getRequestDispatcher("/login.jsp").forward(req, resp);
         log.debug("Successfully logged in with username " + username + "and password " + password);
     }
 

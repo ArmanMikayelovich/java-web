@@ -23,6 +23,13 @@ public class Register extends HttpServlet {
         resp.sendRedirect("/registration.jsp");
     }
 
+    /**
+     * The method checks user's info in validator, and if ALL compliance with standard, saves user to DB.
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String username = req.getParameter("username");
